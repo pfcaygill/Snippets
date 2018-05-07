@@ -1,4 +1,4 @@
-//simple program: boredom killer. should increase at an exponential rate up to a cap
+  //simple program: boredom killer. should increase at an exponential rate up to a cap
 //every n frames produce a bubble.
 //store the bubbles as a bubble object.
 //bubble object has an x,y,radius, and an overlap method that returns a boolean
@@ -13,8 +13,9 @@ final float timerMax=100;
 final float timerRate=1;
 final int maxBubbles=30;
 void setup(){
-  size(600,600);
-  frameRate(120);
+  fullScreen();
+  //size(600,600);
+ // frameRate(120);
   reset();
   ellipseMode(CENTER);
   textAlign(CENTER, CENTER);
@@ -124,7 +125,6 @@ void popBubble(int i){
   }
 }
 class bubble{
-  private final float ROOT_TWO = (float)Math.sqrt(2);
   float x,y,r;
   int col;
   PVector velocity;
