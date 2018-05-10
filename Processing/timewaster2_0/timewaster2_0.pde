@@ -9,20 +9,20 @@ final int rateMin=20;
 int score=0; 
 boolean gameState =true;
 float timer;//variables related to timer function
+//Variables for controling game outcomes
+final float percentNormal = 0.6f;
 final float timerMax=100;
 final float timerRate=1;
 final int maxBubbles=30;
+final int minBubbleR = 40;
 void setup(){
   fullScreen();
-  //size(600,600);
- // frameRate(120);
   reset();
   ellipseMode(CENTER);
   textAlign(CENTER, CENTER);
-  textSize(32);
+  textSize(64);
   noStroke();
   rectMode(CORNERS);
-  //strokeWeight(1);
 }
 void reset(){
   bArray = new ArrayList<bubble>();
@@ -32,10 +32,12 @@ void reset(){
   timer=timerMax;
 }
 void draw(){
- // fill(pall[4],40);      //blur function/fade
+  // fill(pall[4],40);      //blur function/fade
   //rect(0,0,width,height);
   background(pall[4]); //solid function
-  drawBubbles();
+  
+  if(frameCount%(rate*5)==0&&gameState)
+    flipOne();
   if(frameCount%rate==0&&gameState)
     newBubble();
   if(frameCount%rate*rate==0&&rate>rateMin&&gameState)
@@ -45,7 +47,8 @@ void draw(){
   if(gameState){
     fill(0);
     text(score,width/2,height/2);
-    drawTimer();
+    drawTimer();//timer before bubbles puts it in ba
+    drawBubbles();
   }else{
     fill(255);
     rect(width/4,height*7/16,width*3/4,height*9/16);
@@ -69,6 +72,14 @@ void updateAll(){
   for(int i =bArray.size()-1;i>=0;i--){
     bArray.get(i).updateVector(width,height);
     bArray.get(i).moveBubble();
+  }
+}
+void flipOne(){
+  for(int i =0;i<bArray.size();i++){
+    if(!bArray.get(i).type){
+      bArray.get(i).flipType();
+      return;
+    }
   }
 }
 void doTimer(){
@@ -130,13 +141,13 @@ class bubble{
   PVector velocity;
   boolean type;
   public bubble(int w, int h){
-    r = random(20,100);
+    r = random(40,120);
     x = random(r,w-r);
     y = random(r,h-r);
     col=(int)random(3);
     velocity=PVector.fromAngle(random(0,2*PI));
     float val=random(0,1);
-    type=(val<=0.8);
+    type=(val<=percentNormal);
       //println(val+""+type);
     }
     public boolean overlaps(double x1, double y1){
@@ -152,6 +163,9 @@ class bubble{
     }
     public void increaseSpeed(float scale){
       velocity.mult(scale);
+    }
+    public void flipType(){
+    if(!type)type=!type;
     }
     public float getX(){return x;}
     public float getY(){return y;}
