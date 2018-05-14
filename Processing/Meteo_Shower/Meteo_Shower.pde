@@ -8,6 +8,7 @@ public static float initialYMin = -300;
 public static float initialYMax = 0;
 public static float maxRadius = 80;
 public static float radiusScalar=0.2;
+public static float mouseRadius = 30;
 
 public static int maxNumberOfMeteors = 50;
 public static final String gameOver= "Game Over/nTry Again?";
@@ -19,13 +20,12 @@ size(600,600);
 }
 
 void setup(){
-  //for (int i = 0;i<maxNumberOfMeteors;i++){
-  //  newRandomMeteor(); 
-  //}
+  fill(0);
 }
 void draw(){
   background(255);
   //if(frameCount % frameRate==0)
+  drawMouse();
     updateAndDrawMeteors();
 }
 
@@ -37,6 +37,14 @@ boolean crashToEarth(PVector meteor){
     return true;
   return false;
 }
+boolean overlaps(PVector other){
+  float r=calcRadius(other);
+  if((other.x+r)>mouseX-mouseRadius &&(other.x-r)<mouseX+mouseRadius &&(other.y+r)>mouseY-mouseRadius&&(other.y-r)<mouseY+mouseRadius)return true;
+  else return false;
+} 
+void drawMouse(){
+ellipse(mouseX,mouseY,mouseRadius*2,mouseRadius*2);
+} 
 void newRandomMeteor(){
    meteors.add(new PVector(
    random(width),
