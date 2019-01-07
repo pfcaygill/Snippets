@@ -7,7 +7,7 @@ import org.junit.Test;
 /**
  * Unit test for simple App.
  */
-public class AppTest 
+public class AppTest
 {
     /**
      * Rigorous Test :-)
@@ -17,16 +17,16 @@ public class AppTest
     {
         assertTrue( true );
     }
-    
+
     @Test
-    public void testAppWorkingMethod() 
+    public void testAppWorkingMethod()
     {
     	assertTrue(App.workingDummyAppMethod());
     }
-    
+
     @Test
     public void testAppBrokenMethod()
     {
-    	assertTrue(App.faultyDummyAppMethod());
+    	assertTrue(!App.faultyDummyAppMethod());
     }
 }
