@@ -10,4 +10,14 @@ public class App
     {
         System.out.println( "Hello World!" );
     }
+    
+    public static boolean workingDummyAppMethod()
+    {
+    	return true;
+    }
+    
+    public static boolean faultyDummyAppMethod()
+    {
+    	return false;
+    }
 }

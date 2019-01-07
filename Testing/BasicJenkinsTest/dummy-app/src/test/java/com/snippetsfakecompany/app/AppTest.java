@@ -17,4 +17,16 @@ public class AppTest
     {
         assertTrue( true );
     }
+    
+    @Test
+    public void testAppWorkingMethod() 
+    {
+    	assertTrue(App.workingDummyAppMethod());
+    }
+    
+    @Test
+    public void testAppBrokenMethod()
+    {
+    	assertTrue(App.faultyDummyAppMethod());
+    }
 }
