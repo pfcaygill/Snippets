@@ -1,3 +1,8 @@
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.content.Context;
+import android.app.Activity;
+  
   //simple program: boredom killer. should increase at an exponential rate up to a cap
 //every n frames produce a bubble.
 //store the bubbles as a bubble object.
@@ -7,6 +12,7 @@ ArrayList<bubble> bArray;
 int rate= 300;//rate of the bubbles spawning
 final int rateMin=20;
 int score=0; 
+float inputDelay = 0;
 boolean gameState =true;
 float timer;//variables related to timer function
 //Variables for controling game outcomes
@@ -15,6 +21,8 @@ final float timerMax=100;
 final float timerRate=1;
 final int maxBubbles=30;
 final int minBubbleR = 40;
+int highScore = 0;
+String hsName="HighScore";
 void setup(){
   fullScreen();
   reset();
@@ -23,6 +31,7 @@ void setup(){
   textSize(64);
   noStroke();
   rectMode(CORNERS);
+  highScore = loadInt(hsName);
 }
 void reset(){
   bArray = new ArrayList<bubble>();
@@ -32,6 +41,7 @@ void reset(){
   timer=timerMax;
 }
 void draw(){
+  if(inputDelay>0)inputDelay--;
   // fill(pall[4],40);      //blur function/fade
   //rect(0,0,width,height);
   background(pall[4]); //solid function
@@ -51,11 +61,18 @@ void draw(){
     drawBubbles();
   }else{
     fill(255);
-    rect(width/4,height*7/16,width*3/4,height*9/16);
+    rect(width/4,height*7/16,width*3/4,height*10/16);
     fill(0);
     text("Play new game!",width/2,height*15/32);
     fill(#CE51BE);
     text("Previous score: "+score,width/2,height*17/32);
+    if(score>highScore){
+      highScore = score;
+      this.saveInt(score,hsName);
+      text("new high score!",width/2,height*19/32);
+    }else{
+      text("high score: "+highScore,width/2,height*19/32);
+    }
   }
 }
 void newBubble(){
@@ -100,9 +117,24 @@ void drawTimer(){
  //the value of timer*(the max value/the width)
  void endGame(){
  bArray = new ArrayList<bubble>();
+ inputDelay = frameRate/2;
  gameState=false;
  }
 void mouseReleased(){
+  if(inputDelay>0){return;}else{
+     if(!gameState&&
+  mouseX>(width/4)&&
+  mouseX<(width*3/4)&&
+  mouseY>(height*7/16)&&
+  mouseY<(height*9/16)  
+  //checks if within bounding box.
+  ){
+    //rect(width/4,height*7/16,width*3/4,height*9/16); 
+    //psuedo button location
+    reset();
+    gameState=true;
+    return;
+  } 
   int removeMe=-1;
   boolean found = false;
   int i=0;
@@ -113,18 +145,9 @@ void mouseReleased(){
     }else i++;  
   if(removeMe>=0)
     popBubble(removeMe);//has the value to be removed of the bubble, unless it couldnt be found
-  if(!gameState&&
-  mouseX>(width/4)&&
-  mouseX<(width*3/4)&&
-  mouseY>(height*7/16)&&
-  mouseY<(height*9/16)
-  //checks if within bounding box.
-  ){
-    //rect(width/4,height*7/16,width*3/4,height*9/16); 
-    //psuedo button location
-    reset();
-    gameState=true;
-  } 
+ 
+  }
+  
 }
 void popBubble(int i){
   if(bArray.get(i).getType()){
@@ -177,5 +200,26 @@ class bubble{
       else fill(pall[5]);
       ellipse(x,y,r*2,r*2);
       
-    }
+    }    
 }
+
+//https://forum.processing.org/two/discussion/comment/97350/#Comment_97350
+    void saveInt(int _score_, String name){
+      SharedPreferences sharedPreferences;
+      SharedPreferences.Editor editor;
+      Activity act;
+      act = this.getActivity();
+      sharedPreferences = PreferenceManager.getDefaultSharedPreferences(act.getApplicationContext());
+      editor = sharedPreferences.edit();
+      editor.putInt(name, _score_);
+      editor.commit();
+    }
+ 
+    int loadInt(String name){
+      SharedPreferences sharedPreferences;
+      Activity act;
+      act = this.getActivity();
+      sharedPreferences = PreferenceManager.getDefaultSharedPreferences(act.getApplicationContext());
+      int getScore = sharedPreferences.getInt(name, 0);
+      return getScore;
+    }
