@@ -5,5 +5,5 @@ application.linux64
 application.windows32
 application.windows64
 application.macosx
-./Processing/breathGif/frames/*
-./Python/Discord_Bot/Data/*
+/Processing/breathGif/frames/*
+/Python/Discord_Bot/Data/*
