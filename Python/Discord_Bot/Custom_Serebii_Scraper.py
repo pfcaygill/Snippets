@@ -20,20 +20,44 @@ table = galarDexSoup.find('main').findChild('table').find_next_sibling('table')
 # Skip the first two rows of the table by finding the special value of the first non useful row
 startingPoint = table.find('tr').find_next_sibling('tr')
 # Set up our list of urls to navigate to
-pile = []
+pokedex = []
 # Then, iterate over the siblings
 for sibling in startingPoint.next_siblings:
     try:
         entry = sibling.findChild('a').get('href')
-        pile.append(entry)
+        pokedex.append(entry)
         #Print an indicator that we have not frozen the machine
         print('#', end= "", flush= True)
     except:
         pass
 
 # Tells us we have been successfull
-print ('\nFound ' + str(len(pile)) + ' entries') 
-print ('Sample 1: ' + str(pile[0]))
+print ('\nFound ' + str(len(pokedex)) + ' entries') 
+print ('Sample 1: ' + str(pokedex[0]))
 print ('Starting secondary scrape')
 
 # Move on to the second part of the process: scraping the individual pages 
+# We need to put our individual rates mapped to the individual pokemon
+CatchRates = {}
+# We also need to write to a file
+FileOut = open("./Data/Pokemon_Catch_Rates.txt","x")
+# Now soup each page
+for pokemon in pokedex:
+    # Get our pokedex entry soup
+    # Our ref looks like "/pokedex-swsh/runerigus/"
+    dexEntryURL = BaseEntryURL + str(pokemon)
+    reqDexEntry = requests.get(dexEntryURL, headers={'user-agent':'Mozilla/5.0'})
+    entrySoup = BeautifulSoup(reqDexEntry.content, 'html5lib')
+    # We need to go the tricky way to find the name
+    row = entrySoup.find('td', string='Gender Ratio').find_parent('tr').find_next_siblings('tr')[2]
+    catchRate = row.find_all('td')[3].text
+    # Strip the start off the string for the pokemon name
+    pokemonName = pokemon[14:-1]
+    # Now store the dict entry as name -> number
+    CatchRates[pokemonName] = catchRate
+    # Print out our success (optional)
+    print(pokemonName + str(catchRate))
+    # Lastly store our scraped data in a file in the data folder
+    FileOut.write(pokemonName + ',' + catchRate + '\n')
+# And close our file
+FileOut.close()
