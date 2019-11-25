@@ -12,12 +12,27 @@ void setupUI()
   by = (height - bh)/3;
   chunkSize = by - margin*2;
 }
+
+//Board control area
 void drawBoard()
 {
   board.drawBoard(bx, by, bw, bh);
   drawStack();
   drawButtons();
 }
+void detectBoardTouch()
+{
+  //detect the touch if it is within the area of the board
+  if(by <= mouseY && mouseY<= (by+bh))
+  {
+  float shiftX = mouseX-bx;
+  float shiftY = mouseY-by;
+  int x = (int)(shiftX/(bw/5f));
+  int y = (int)(shiftY/(bh/5f));
+  board.selectTile(x,y);
+  } 
+}
+//Stack control area
 void drawStack()
 {
   float bannerWidth = width - margin*2;
@@ -28,6 +43,7 @@ void drawStack()
   fill(#7EFFFF);
   rect(bannerX,bannerY,bannerWidth,bannerHeight);
 }
+//Button control area
 void drawButtons()
 {
   pushMatrix();

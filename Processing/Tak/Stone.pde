@@ -1,18 +1,27 @@
-enum StoneType{ 
-  flat("F"),
-  standing("S"),
-  capstones("C");
-  public final String toString;
-  private StoneType(String toString){
-    this.toString = toString;
+enum Stone{
+  //Three types of stones
+  flat,
+  standing,
+  capstone;
+
+  public String toString()
+  {
+    switch(this)
+    {
+      case capstone: return "C";
+      case standing: return "S";
+      case flat: 
+      default: return "F";
+    }
   }
-}
-class Stone{
-  StoneType type;
-  public boolean canStackOn(){
-    return StoneType.flat == this.type;
-  }
-  public String toString(){
-    return type.toString;
+  public boolean canBeStackedOnBy(Stone other)
+  {
+    switch(this)
+    {
+      case capstone: return false;
+      case standing: return other == Stone.capstone;
+      case flat:
+      default: return true;
+    }
   }
 }

@@ -16,3 +16,7 @@ void draw()
     case Move: break;
   }
 }
+void mousePressed()
+{
+  detectBoardTouch();
+}
