@@ -24,4 +24,12 @@ class DBHandler:
             return nameList.fetchall()
         except :
             return ()
-
+    
+    def retrieveDetails(self, pokemon:str ):
+        try :
+            details = self.c.execute('''SELECT *
+                                          FROM pokemon 
+                                          WHERE Pokemon_Name=?''', (pokemon,))
+        except :
+            return None
+        return details.fetchone()

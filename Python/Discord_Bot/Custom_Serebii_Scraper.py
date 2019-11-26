@@ -20,20 +20,31 @@ table = galarDexSoup.find('main').findChild('table').find_next_sibling('table')
 # Skip the first two rows of the table by finding the special value of the first non useful row
 startingPoint = table.find('tr').find_next_sibling('tr')
 # Set up our list of urls to navigate to
-pokedex = []
+catchDex = []
+statDex = {}
 # Then, iterate over the siblings
 for sibling in startingPoint.next_siblings:
     try:
         entry = sibling.findChild('a').get('href')
-        pokedex.append(entry)
+        catchDex.append(entry)
+        #Strip out more than just the catch rate for later
+        stats = sibling.find_all('td')
+        statDex[entry] = (
+            str(stats[6].text),
+            str(stats[7].text),
+            str(stats[8].text),
+            str(stats[9].text),
+            str(stats[10].text),
+            str(stats[11].text))
         #Print an indicator that we have not frozen the machine
         print('#', end= "", flush= True)
     except:
         pass
 
 # Tells us we have been successfull
-print ('\nFound ' + str(len(pokedex)) + ' entries') 
-print ('Sample 1: ' + str(pokedex[0]))
+print ('\nFound ' + str(len(catchDex)) + ' entries') 
+print ('Sample 1: ' + str(catchDex[0]))
+print (statDex[catchDex[0]])
 print ('Starting secondary scrape')
 
 # Move on to the second part of the process: scraping the individual pages 
@@ -42,7 +53,7 @@ CatchRates = {}
 # We also need to write to a file
 FileOut = open("./Data/Pokemon_Catch_Rates.txt","x")
 # Now soup each page
-for pokemon in pokedex:
+for pokemon in catchDex:
     # Get our pokedex entry soup
     # Our ref looks like "/pokedex-swsh/runerigus/"
     dexEntryURL = BaseEntryURL + str(pokemon)
@@ -58,6 +69,6 @@ for pokemon in pokedex:
     # Print out our success (optional)
     print(pokemonName + str(catchRate))
     # Lastly store our scraped data in a file in the data folder
-    FileOut.write(pokemonName + ',' + catchRate + '\n')
+    FileOut.write(pokemonName + ',' + catchRate + ',' + ','.join(statDex[pokemon]) + '\n')
 # And close our file
 FileOut.close()
