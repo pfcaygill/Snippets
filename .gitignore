@@ -7,3 +7,5 @@ application.windows64
 application.macosx
 /Processing/breathGif/frames/*
 /Python/Discord_Bot/Data/*
+__pycache__
+/Python/Discord_Bot/.vscode/*
