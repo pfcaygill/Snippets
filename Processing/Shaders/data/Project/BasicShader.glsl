@@ -7,27 +7,35 @@ uniform vec2 u_mouse;
 uniform float u_time;
 uniform float PI;
 
-float plot(vec2 st){
-    float edge1 = 0.0055; 
-    float edge2 = 0.005;
-    return smoothstep(edge1, edge2, abs(st.x - st.y));
+float plot(vec2 pixel_coordinate, float edge, float offset, float scaling){
+    // the plot function
+    float graph_point = (pixel_coordinate.y + offset) * scaling;
+    return smoothstep(edge-0.01, edge, graph_point) - 
+           smoothstep(edge, edge+0.01, graph_point);
 }
 
-float sine_step(float pct){
-    return step(sin(pct), 0.0);
+float axis(vec2 pixel_coordinate, float offset){    
+    return step(abs(offset) - 0.001, pixel_coordinate.y) * 
+           step(pixel_coordinate.y, abs(offset) + 0.001);
 }
 
 void main(){
     vec2 st = gl_FragCoord.xy/u_resolution;
-    float dx = 2.0 * PI * st.x;
-    vec2 delta = 2.0 * PI * st;
-    vec3 color = vec3(dx);
+    
+    // value used for gradiant
+    float y = abs(sin(PI*2.0 * st.x));
 
-    float stepped = sine_step(dx);
-    float plotted = plot(st);
-    float chosen = plotted;
-    color.rgb = (1.0-chosen) * color;
-    color.g += chosen;
+    // the gradiant color based on the value of Y
+    vec3 color = vec3(y);
+
+    // plot the gradiant color as a green line using our plot function    
+    float graph_offset = -0.0;
+    float graph_scaling = 2.0;
+    float plotted = plot(st, y, graph_offset, graph_scaling);
+    float axis = axis(st, graph_offset);
+    color.rgb *= (1.0-plotted) * (1.0-axis);
+    color.r += axis;
+    color.g += plotted;
 
     gl_FragColor = vec4(color, 1.0);
 }
