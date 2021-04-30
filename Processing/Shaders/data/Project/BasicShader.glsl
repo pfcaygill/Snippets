@@ -19,13 +19,15 @@ float sine_step(float pct){
 
 void main(){
     vec2 st = gl_FragCoord.xy/u_resolution;
-    vec3 color = vec3(st.x);   
-    float x = 2 * PI * st.x;
+    float dx = 2.0 * PI * st.x;
+    vec2 delta = 2.0 * PI * st;
+    vec3 color = vec3(dx);
 
-    float stepped = sine_step(x);
+    float stepped = sine_step(dx);
     float plotted = plot(st);
-    color.rgb = (1.0-plotted) * color;
-    color.g += plotted;
+    float chosen = plotted;
+    color.rgb = (1.0-chosen) * color;
+    color.g += chosen;
 
     gl_FragColor = vec4(color, 1.0);
 }

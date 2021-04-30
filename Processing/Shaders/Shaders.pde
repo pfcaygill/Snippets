@@ -4,6 +4,8 @@
 */
 
 PShader shader;
+String SHADER_FILE = "Project/BasicShader.glsl";
+
 void settings(){
  size(600, 600, P2D);
 }
@@ -14,7 +16,7 @@ void setup() {
   Loads a shader into the PShader object. The shader file must be loaded in the sketch's "data" folder/directory to load correctly.
   Shaders are compatible with the P2D and P3D renderers, but not with the default renderer.
   */
-  shader = loadShader("Project/BasicShader.glsl");
+  shader = loadShader(SHADER_FILE);
 }
 void draw() {
   if (frameCount==1){
@@ -26,4 +28,17 @@ void draw() {
   shader.set("u_time", millis() / 1000.0);
   shader(shader);
   rect(0,0,width,height);
+}
+void mousePressed(){
+  reloadShader();
+}
+
+void reloadShader(){
+  try {
+    PShader temp = loadShader(SHADER_FILE);
+    shader = temp;
+    println("Shader Reloaded");
+  } catch(Exception e){
+    println(e.getMessage());
+  }
 }
