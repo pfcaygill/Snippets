@@ -23,14 +23,16 @@ void main(){
     vec2 st = gl_FragCoord.xy/u_resolution;
     
     // value used for gradiant
-    float y = abs(sin(PI*2.0 * st.x));
+    float y = st.x;
+    //y = sin(PI*2.0 * (st.x + u_time/5));
+    y = pow(4.0 * y * (1.0 - y), 0.5);
 
     // the gradiant color based on the value of Y
     vec3 color = vec3(y);
 
     // plot the gradiant color as a green line using our plot function    
     float graph_offset = -0.0;
-    float graph_scaling = 2.0;
+    float graph_scaling = 1.0;
     float plotted = plot(st, y, graph_offset, graph_scaling);
     float axis = axis(st, graph_offset);
     color.rgb *= (1.0-plotted) * (1.0-axis);
