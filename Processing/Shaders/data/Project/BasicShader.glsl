@@ -3,22 +3,29 @@ precision mediump float;
 #endif
 
 uniform vec2 u_resolution;
-uniform vec3 u_mouse;
+uniform vec2 u_mouse;
 uniform float u_time;
+uniform float PI;
 
 float plot(vec2 st){
-    return smoothstep(0.02, 0.016, abs(st.y - st.x));
+    float edge1 = 0.0055; 
+    float edge2 = 0.005;
+    return smoothstep(edge1, edge2, abs(st.x - st.y));
+}
+
+float sine_step(float pct){
+    return step(sin(pct), 0.0);
 }
 
 void main(){
     vec2 st = gl_FragCoord.xy/u_resolution;
+    vec3 color = vec3(st.x);   
+    float x = 2 * PI * st.x;
 
-    float y = st.x;
-    vec3 color = vec3(y);
-
-    float pct = plot(st);
-
-    color = (1.0 - pct)*color + pct*vec3(0.0, 1.0, 0.0);
+    float stepped = sine_step(x);
+    float plotted = plot(st);
+    color.rgb = (1.0-plotted) * color;
+    color.g += plotted;
 
     gl_FragColor = vec4(color, 1.0);
 }

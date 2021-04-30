@@ -1,4 +1,12 @@
 ArrayList<PVector> points = new ArrayList<PVector>();
+PVector rotation =new PVector(0,0,0);
+
+float scale =100;
+float size = 0.01f;
+
+int mouseXOld;
+int mouseYOld;
+
 
 void setup(){
   size(600,600,P3D);
@@ -14,9 +22,6 @@ void setup(){
   lights();
 }
 
-PVector rotation =new PVector(0,0,0);
-float scale =100;
-float size = 0.01f;
 void draw(){
   background(0);
   pushMatrix();
@@ -28,17 +33,13 @@ void draw(){
   strokeWeight(1/scale);
   //perform scaling only for the distance and not for the line width
   translate(-0.5,-0.5);//centring applied post scaling, so that the translation matrix has the correct units
- // noFill();   
   stroke(255);
  
   beginShape(QUADS);
   
   for(PVector point:points){
     pushMatrix();
-    //noStroke();
-    //fill(255);       
-    vertex(point.x,point.y,point.z);      
-    //vertex(0,0,0);
+    vertex(point.x,point.y,point.z);
     popMatrix();
   }
   endShape(CLOSE);
@@ -57,16 +58,16 @@ void draw(){
   popMatrix();
   popMatrix();
 }
-int mouseXOld;
-int mouseYOld;
 void mousePressed(){
   mouseXOld = mouseX;mouseYOld=mouseY;
 }
+
 void mouseReleased(){
   int x = mouseX - mouseXOld;
   int y = mouseY - mouseYOld;
   rotation = new PVector(rotation.x+x,rotation.y+y,rotation.z);
 }
+
 void keyPressed(){
-if(key=='r')rotation=new PVector(0,0,0);
+  if(key=='r')rotation=new PVector(0,0,0);
 }

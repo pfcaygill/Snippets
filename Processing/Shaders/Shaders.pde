@@ -5,7 +5,7 @@
 
 PShader shader;
 void settings(){
- fullScreen(P2D, 1);
+ size(600, 600, P2D);
 }
 void setup() {
   noStroke();
@@ -17,8 +17,12 @@ void setup() {
   shader = loadShader("Project/BasicShader.glsl");
 }
 void draw() {
+  if (frameCount==1){
+    surface.setLocation(100, 0);
+  }
   shader.set("u_resolution", float(width), float(height));
   shader.set("u_mouse", float(mouseX), float(mouseY));
+  shader.set("PI", PI);
   shader.set("u_time", millis() / 1000.0);
   shader(shader);
   rect(0,0,width,height);
