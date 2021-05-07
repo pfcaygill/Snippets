@@ -36,8 +36,13 @@ void mousePressed(){
 void reloadShader(){
   try {
     PShader temp = loadShader(SHADER_FILE);
+    shader(temp); // check our shader can be applied
+    resetShader();
     shader = temp;
     println("Shader Reloaded");
+  } catch(RuntimeException e){
+    println("Could not compile fragment shader, canceling load");
+    println(e.getMessage());
   } catch(Exception e){
     println(e.getMessage());
   }
