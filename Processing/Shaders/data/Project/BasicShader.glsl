@@ -19,6 +19,20 @@ float axis(vec2 pixel_coordinate, float offset){
            step(pixel_coordinate.y, abs(offset) + 0.001);
 }
 
+vec3 color(float y, vec2 st, float graph_offset, float graph_scaling){
+    // the gradiant color based on the value of Y
+    vec3 col = vec3(y);
+
+    // plot the gradiant color as a green line using our plot function    
+    
+    float plotted = plot(st, y, graph_offset, graph_scaling);
+    float axis = axis(st, graph_offset);
+    col.rgb *= (1.0-plotted) * (1.0-axis);
+    col.r += axis;
+    col.g += plotted;
+    return col;
+}
+
 void main(){
     vec2 st = gl_FragCoord.xy/u_resolution;
     
@@ -28,16 +42,9 @@ void main(){
     y = pow(4.0 * y * (1.0 - y), 0.5);
 
     // the gradiant color based on the value of Y
-    vec3 color = vec3(y);
-
-    // plot the gradiant color as a green line using our plot function    
     float graph_offset = -0.0;
     float graph_scaling = 1.0;
-    float plotted = plot(st, y, graph_offset, graph_scaling);
-    float axis = axis(st, graph_offset);
-    color.rgb *= (1.0-plotted) * (1.0-axis);
-    color.r += axis;
-    color.g += plotted;
+    vec3 color = color(y, st, graph_offset, graph_scaling);
 
     gl_FragColor = vec4(color, 1.0);
 }
